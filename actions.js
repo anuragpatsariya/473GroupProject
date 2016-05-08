@@ -61,14 +61,14 @@ angular.module("display", [])
                         $scope.loggedout = false;
                         console.log("Welcome " + response.data);
                         $http({
-                            method:"POST",
-                            url:"/getEvents",
-                            data: {username : response.data}
-                        }).then(function successCallback(response){
+                            method: "POST",
+                            url: "/getEvents",
+                            data: { username: response.data }
+                        }).then(function successCallback(response) {
                             console.log(response.data);
                             $scope.eventCards = response.data;
-                        }, function errorCallback(response){
-                           console.log("error"); 
+                        }, function errorCallback(response) {
+                            console.log("error");
                         });
                     } else {
                         window.alert("Incorrect username or password.");
@@ -145,6 +145,15 @@ angular.module("display", [])
             }).then(function successCallback(response) {
                 $scope.loggedin = false;
                 $scope.loggedout = true;
+                $http({
+                    method: "POST",
+                    url: "/getEvents",
+                }).then(function successCallback(response) {
+                    console.log(response.data);
+                    $scope.eventCards = response.data;
+                }, function errorCallback(response) {
+                    console.log("Error.");
+                });
             }, function errorCallback(response) {
                 console.log("Error");
             });
