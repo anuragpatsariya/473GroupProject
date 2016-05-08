@@ -198,12 +198,12 @@
                 right ">more_vert</i></span>
               <div class="mycards ">
                 <a class="waves-effect waves-light btn modal-trigger " ng-click="join_now(eventCard) " href="#join_now ">JOIN NOW!</a>
-                <a class="waves-effect waves-light btn modal-trigger " ng-click="" href="#join_now "><i class="material-icons">delete_forever</i></a>
+                <a class="waves-effect waves-light btn modal-trigger " ng-click="" ng-if="loggedin" href="#join_now "><i class="material-icons">delete_forever</i></a>
               </div>
             </div>
             <div class="card-reveal ">
               <span class="card-title grey-text text-darken-4 ">{{eventCard.eventName}}<i class="material-icons right ">close</i></span>
-              <p>Here is some more information about this product that is only revealed once clicked on.</p>
+              <p>{{eventCard.eventDesc}}</p>
             </div>
           </div>
           <!-------------------------------------------for join now models----------------------->
