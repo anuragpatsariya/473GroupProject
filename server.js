@@ -47,7 +47,7 @@ app.post("/login", function (req, res) {
                     console.log(result);
                     console.log(result.length);
                     //console.log(result.body.username, result.body.passwprd);
-                    if (result.length == 1) {
+                    if (result.length === 1) {
                         console.log("Login Successful.");
                         sess.user = result[0].username;
                         console.log(sess.user,result[0].username);
@@ -66,12 +66,14 @@ app.post("/login", function (req, res) {
     });
 });
 
-app.get("/getEvents", function (req, res) {
+app.post("/getEvents", function (req, res) {
+    sess=req.session;
+    console.log(req.body);
     console.log("Ready to serve Data.");
     console.log(sess);
     var collection;
-    if(req.sess){
-        var loggedinUSer = req.body;
+    if(sess.user){
+        var loggedinUSer = req.body.username;
         var collection;
         MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
         if (err) {
@@ -83,6 +85,7 @@ app.get("/getEvents", function (req, res) {
                 if (err) {
                     res.send(err);
                 } else {
+                    console.log("user data");
                     //console.log(result);
                     res.send(result);
                 }
@@ -90,7 +93,7 @@ app.get("/getEvents", function (req, res) {
         }
     });
         
-    }
+    }else {
     MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
         if (err) {
             console.log("Unable to get Events.");
@@ -101,12 +104,12 @@ app.get("/getEvents", function (req, res) {
                 if (err) {
                     res.send(err);
                 } else {
-                    //console.log(result);
+                    console.log("all Data");
                     res.send(result);
                 }
             });
         }
-    });
+    });}
 });
 
 app.post("/registerUser", function (req, res) {

@@ -4,7 +4,7 @@ angular.module("display", [])
         $scope.loggedout = true;
         $scope.eventCards = [];
         $http({
-            method: "GET",
+            method: "POST",
             url: "/getEvents",
         }).then(function successCallback(response) {
             console.log(response.data);
@@ -61,9 +61,9 @@ angular.module("display", [])
                         $scope.loggedout = false;
                         console.log("Welcome " + response.data);
                         $http({
-                            method:"GET",
+                            method:"POST",
                             url:"/getEvents",
-                            data:response.data
+                            data: {username : response.data}
                         }).then(function successCallback(response){
                             console.log(response.data);
                             $scope.eventCards = response.data;
