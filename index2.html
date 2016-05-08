@@ -17,9 +17,12 @@
     <div class="nav-wrapper container">
       <a id="logo-container" href="#" class="brand-logo">EventFy</a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="#signin" ng-click="open_login()" class="modal-trigger">Sign in</a></li>
-        <li><a href="#signup" ng-click="open_signup()" class="modal-trigger">Sign up</a></li>
-        <li><a href="#signup" ng-click="open_signup()" class="modal-trigger">About Us</a></li>
+        <li><a href="#signin" ng-click="open_login()" class="modal-trigger" ng-if="loggedout">Sign in</a></li>
+        <li><a href="#signup" ng-click="open_signup()" class="modal-trigger" ng-if="loggedout">Sign up</a></li>
+        <!--<li><a href="#signup" ng-click="open_signup()" class="modal-trigger">About Us</a></li>-->
+        <li><a href="#createEvent" ng-click="create_Event()" class="modal-trigger" ng-if="loggedin">Create Event</a></li>
+        <li><a href="#logout" ng-click="logout()" class="modal-trigger" ng-if="loggedin">Logout</a></li>
+
       </ul>
 
       <ul id="nav-mobile" class="side-nav">
@@ -58,141 +61,220 @@
       <div class="col l12 m12 s12">
         <div class="input-field">
           <i class="material-icons prefix">account_circle</i>
-          <input placeholder="Userame" id="u1" ng-model="u1" type="text" class="validate">
+          <input placeholder="Userame" id="u1" ng-model="loginDetails.username" type="text" class="validate">
         </div>
         <div class="input-field">
           <i class="material-icons prefix">vpn_key</i>
-          <input placeholder="Password" id="p1" ng-model="p1" type="password" class="validate">
+          <input placeholder="Password" id="p1" type="password" class="validate" ng-model="loginDetails.pwd">
         </div>
-        <br>
         <div>
-          <button type="submit" class="waves-effect waves-light btn" ng-click="checkforinput()" id="from_database"> Login </button>
-
+          <button type="submit" class="waves-effect waves-light btn" ng-click="login()" id="from_database"> Login </button>
         </div>
-        <br>
-        <div>
-          <a class="btn waves-effect waves-green modal-close modal-trigger" href="#register">Sign-up</a>
-        </div>
-
       </div>
     </div>
   </div>
 
-  <!-- Modal for signup -->
-  <div id="signup" class="modal modal-fixed-footer">
+  <!-- Modal for create event -->
+  <div id="createEvent" class="modal modal-fixed-footer">
     <div class="modal-header">
       <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat right ">X</a>
     </div>
     <div align="center" class="modal-content">
-      <h4>Sign Up</h4>
-      <h5>Enter your personal details.</h5>
-      <input placeholder="First Name" type="text" ng-model="user.firstName" required/>
-      <input placeholder="Last Name" required type="text" ng-model="user.lastName" />
-      <input placeholder="Username" required type="text" ng-model="user.username">
-      <input placeholder="Password" required type="password" ng-model="user.password" name="password"  />
-      <input placeholder="Date of Birth" required type="date" ng-model="user.dob" />
-      <input placeholder="E-mail ID e.g example@abc.com" required type="email" ng-model="user.email" />      
-      <button type = "button" class="waves-effect waves-red btn"  ng-click="register()">Register</button>
-        
-      
+      <h4>Create Event</h4>
+      <h5>Enter the event details.</h5>
+     
+
+      <div class="row">
+        <div class="col s12">
+          <div class="row">
+            <div class="input-field col s12">
+              <input type="number" id="eventCapacity" ng-model="eventDetails.eventCapacity" class="validate">
+              <label for="eventCapacity" data-error="wrong" data-success="right">Event Capacity</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="date" id="eventDate" ng-model="eventDetails.eventDate" class="validate">
+              <label for="eventDate" data-error="wrong" data-success="right">Event Date</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="text" id="eventDesc" ng-model="eventDetails.eventDesc" class="validate">
+              <label for="eventDesc" data-error="wrong" data-success="right">Event Description</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="text" id="eventID" ng-model="eventDetails.eventID" class="validate">
+              <label for="eventID" data-error="wrong" data-success="right">Event ID</label>
+            </div>            
+             <div class="input-field col s12">
+              <input  type="text" id="imageURL" ng-model="eventDetails.imageURL" class="validate">
+              <label for="imageURL" data-error="wrong" data-success="right">Event Image URL</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="text" id="eventVerified" ng-model="eventDetails.eventVerified" class="validate">
+              <label for="eventVerified" data-error="wrong" data-success="right">Is event verified</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="text" id="eventVisible" ng-model="eventDetails.eventVisible" class="validate">
+              <label for="eventVisible" data-error="wrong" data-success="right">Is event visible</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="number" id="locLat" ng-model="eventDetails.locLat"" class="validate">
+              <label for="locLat" data-error="wrong" data-success="right">Event Location Latitute</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="number" id="LocLong" ng-model="eventDetails.locLong" class="validate">
+              <label for="LocLong" data-error="wrong" data-success="right">Event Location Longitude</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="text" id="eventName" ng-model="eventDetails.eventName" class="validate">
+              <label for="eventName" data-error="wrong" data-success="right">Event Name</label>
+            </div>            
+             <div class="input-field col s12">
+              <input  type="text" id="eventType" ng-model="eventDetails.eventType" class="validate">
+              <label for="eventType" data-error="wrong" data-success="right">Event Type</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="number" id="visibility" ng-model="eventDetails.visibility" class="validate">
+              <label for="visibility" data-error="wrong" data-success="right">Event Visibility in Miles</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="time" id="eventTime" ng-model="eventDetails.eventTime" class="validate">
+              <label for="eventTime" data-error="wrong" data-success="right">Event Time</label>
+            </div>            
+             <div class="input-field col s12">
+              <input type="number" id="tenure" ng-model="eventDetails.tenure" class="validate">
+              <label for="tenure" data-error="wrong" data-success="right">Event Visibility tenure in hours</label>
+            </div>
+            
+            
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn" ng-click="createEvent()">Create Event</button>
+
+
     </div>
   </div>
-  
-  
-   
+
+
+
   <!--------------------------------->
 
-  <div class="container1">
-    <div class="section">
+
+  <!-- Modal for signup -->
+  <div id="signup " class="modal modal-fixed-footer ">
+    <div class="modal-header ">
+      <a href="#! " class="modal-action modal-close waves-effect waves-red btn-flat right ">X</a>
+    </div>
+    <div align="center " class="modal-content ">
+      <h4>Sign Up</h4>
+      <h5>Enter your personal details.</h5>
+      <input placeholder="First Name " type="text " ng-model="user.firstName " required/>
+      <input placeholder="Last Name " required type="text " ng-model="user.lastName " />
+      <input placeholder="Username " required type="text " ng-model="user.username ">
+      <input placeholder="Password " required type="password " ng-model="user.password " name="password " />
+      <input placeholder="Date of Birth " required type="date " ng-model="user.dob " />
+      <input placeholder="E-mail ID e.g example@abc.com " required type="email " ng-model="user.email " />
+      <button type="button " class="waves-effect waves-red btn " ng-click="register() ">Register</button>
+
+
+    </div>
+  </div>
+
+
+
+  <!--------------------------------->
+
+  <div class="container1 ">
+    <div class="section ">
 
       <!--   Icon Section   -->
-      <div class="row">
-         <div class="col s3" ng-repeat="eventCard in eventCards">
-          <div class="card">
-            <div class="card-image waves-effect waves-block waves-light">
-              <img class="activator" ng-src="images/{{eventCard.imageURL}}">
+      <div class="row " >
+        <div class="col s3 " ng-repeat="eventCard in eventCards ">
+          <div class="card " >
+            <div class="card-image waves-effect waves-block waves-light ">
+              <img class="activator " ng-src="images/{{eventCard.imageURL}} ">
             </div>
-            <div class="card-content">
-              <span class="card-title activator grey-text text-darken-4">{{eventCard.eventName}}<i class="material-icons right">more_vert</i></span>
-              <div class="mycards">
-                <a class="waves-effect waves-light btn modal-trigger" ng-click="join_now(eventCard)" href="#join_now">JOIN NOW!</a>
+            <div class="card-content ">
+              <span class="card-title activator grey-text text-darken-4 ">{{eventCard.eventName}}<i class="material-icons
+                right ">more_vert</i></span>
+              <div class="mycards ">
+                <a class="waves-effect waves-light btn modal-trigger " ng-click="join_now(eventCard) " href="#join_now ">JOIN NOW!</a>
               </div>
             </div>
-            <div class="card-reveal">
-              <span class="card-title grey-text text-darken-4">{{eventCard.eventName}}<i class="material-icons right">close</i></span>
+            <div class="card-reveal ">
+              <span class="card-title grey-text text-darken-4 ">{{eventCard.eventName}}<i class="material-icons right ">close</i></span>
               <p>Here is some more information about this product that is only revealed once clicked on.</p>
             </div>
           </div>
           <!-------------------------------------------for join now models----------------------->
-  <div id="{{eventCard._id}}" class="modal">
-    <div class="modal_for_login">
-      <div class="modal-header">
-        <a href="#!" class="modal-action modal-close waves-effect waves-red btn-flat right ">X</a>
-      </div>
-      <div class="modal-content">
-
-        <p>Event Name:{{eventCard.eventName}}</p>
-        <p>Date:{{eventCard.eventDate}}</p>
-        <p>Time:{{eventCard.eventTime}}</p>
-        <p>Type:{{eventCard.eventType}}</p>
-        <p>Description:{{eventCard.eventDesc}}</p>
-
-
-      </div>
-      <div class="modal-footer">
-        <div class="login_button">
-          <button class="waves-effect waves-red btn" type="submit" ng-click="">Join Event</button>
-        </div>
-      </div>
-    </div>
-  </div>
-        </div>
-       
-      </div>
-
-
-
-
-
-      
-
-
-  
-  <footer class="page-footer teal">
-          <div class="container">
-            <div class="row">
-              <div class="col l6 s12">
-                <h5 class="white-text">Footer Content</h5>
-                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+          <div id="{{eventCard._id}} " class="modal ">
+            <div class="modal_for_login ">
+              <div class="modal-header ">
+                <a href="#! " class="modal-action modal-close waves-effect waves-red btn-flat right ">X</a>
               </div>
-              <div class="col l4 offset-l2 s12">
-                <h5 class="white-text">Links</h5>
-                <ul>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-                  <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
-                </ul>
+              <div class="modal-content ">
+
+                <p>Event Name:{{eventCard.eventName}}</p>
+                <p>Date:{{eventCard.eventDate}}</p>
+                <p>Time:{{eventCard.eventTime}}</p>
+                <p>Type:{{eventCard.eventType}}</p>
+                <p>Description:{{eventCard.eventDesc}}</p>
+
+
+              </div>
+              <div class="modal-footer ">
+                <div class="login_button ">
+                  <button class="waves-effect waves-red btn " type="submit " ng-click=" ">Join Event</button>
+                </div>
               </div>
             </div>
           </div>
-          <div class="footer-copyright">
-            <div class="container">
+        </div>
+
+      </div>
+
+
+
+
+
+
+
+
+
+      <footer class="page-footer teal ">
+        <div class="container ">
+          <div class="row ">
+            <div class="col l6 s12 ">
+              <h5 class="white-text ">Footer Content</h5>
+              <p class="grey-text text-lighten-4 ">You can use rows and columns here to organize your footer content.</p>
+            </div>
+            <div class="col l4 offset-l2 s12 ">
+              <h5 class="white-text ">Links</h5>
+              <ul>
+                <li><a class="grey-text text-lighten-3 " href="#! ">Link 1</a></li>
+                <li><a class="grey-text text-lighten-3 " href="#! ">Link 2</a></li>
+                <li><a class="grey-text text-lighten-3 " href="#! ">Link 3</a></li>
+                <li><a class="grey-text text-lighten-3 " href="#! ">Link 4</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-copyright ">
+          <div class="container ">
             © 2014 Copyright Text
-            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
-            </div>
+            <a class="grey-text text-lighten-4 right " href="#! ">More Links</a>
           </div>
-        </footer>
-            
+        </div>
+      </footer>
+
 
 
       <!--  Scripts-->
-      <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-      <script src="js/materialize.js"></script>
-      <script src="js/init.js"></script>
-      <script src="angular.min.js"></script>
-      <script src="index.js"></script>
-      <script src="actions.js"></script>
+      <script src="https://code.jquery.com/jquery-2.1.1.min.js "></script>
+      <script src="js/materialize.js "></script>
+      <script src="js/init.js "></script>
+      <script src="angular.min.js "></script>
+      <script src="index.js "></script>
+      <script src="actions.js "></script>
 
 </body>
 
