@@ -4,6 +4,7 @@ angular.module("display", ['ngMap'])
         $scope.loggedout = true;
         $scope.eventCards = [];
         var vm = this;
+        $scope.render = true;
         $scope.dynMarkers = [];
         $scope.points = [
             { "name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index": 0 },
@@ -207,9 +208,15 @@ angular.module("display", ['ngMap'])
 
             directionsDisplay.setMap($scope.map);
 
+            window.setTimeout(function(){
+
+                google.maps.event.trigger(map, 'resize');
+            },100);
+
             function calcRoute(pos) {
 
-
+                google.maps.event.trigger($scope.map, 'resize');
+                $scope.map.setCenter(0);
                 var start = $scope.points[0].latitude + "," + $scope.points[0].longitude;
                 var end = $scope.points[pos].latitude + "," + $scope.points[pos].longitude;
 
@@ -234,16 +241,24 @@ angular.module("display", ['ngMap'])
         }
 
         NgMap.getMap().then(function (map) {
+            window.setTimeout(function(){
 
-
-
-
-
-
+                google.maps.event.trigger(map, 'resize');
+            },100);
 
         });
 
+        $scope.resizeMap = function(){
+          //  alert("refresh");
+            google.maps.event.trigger($scope.map, 'resize');
 
+
+            window.setTimeout(function(){
+
+                google.maps.event.trigger(map, 'resize');
+            },100);
+          //  $scope.map.setCenter(0);
+        }
 
 
     });
