@@ -19,7 +19,7 @@ angular.module("display", ['ngMap'])
         }, function errorCallback(response) {
             console.log("Error.");
         });
-        $('.modal-trigger').leanModal();
+       // $('.modal-trigger').leanModal();
 
 
         $scope.open_login = function () {
@@ -42,6 +42,26 @@ angular.module("display", ['ngMap'])
         }
 
 
+
+        $scope.deleteEvent = function(eventCard){
+            console.log("Delete called.");
+            console.log(eventCard);
+            $http({
+                method:"POST",
+                url:"/deleteEvent",
+                data:eventCard
+            }).then(function successCallback(response){
+                //console.log(response);
+                //console.log($scope.eventCards.indexOf(eventCard));
+                console.log(response.data);
+                $scope.eventCards.splice($scope.eventCards.indexOf(eventCard), 1);
+                
+                
+                
+            },function errorCallback(response){
+                console.log("Error");
+            });
+        };
         //console.log($scope.eventCards);
         $scope.loginDetails = {
             username: "",

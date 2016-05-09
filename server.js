@@ -16,12 +16,35 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + "/index2.html");
 });
 
+app.post("/deleteEvent", function(req, res){
+   console.log("Server deleteEvent called.");
+   console.log(req.body); 
+   var eventID = req.body.eventID;
+   console.log(eventID);
+   var collection;
+   MongoClient.connect("mongodb://localhost:27017/event_data", function(err,db){
+       if(err){
+           console.log("Unable to connect for delete."+err);
+       } else {
+           console.log("connected for delete.");
+           collection = db.collection("event_data");
+           collection.remove({"eventID":eventID}, function(error,record){
+            //    if(!error){
+            //        console.log(record);
+                    res.send(record);
+            //    }
+           });
+       }
+   });
+});
+
 app.post("/logout", function (req, res) {
     req.session.destroy(function (err) {
         if (err) {
             console.log(err);
         } else {
-            res.redirect('/');
+            //res.redirect('/');
+            res.send("Logged out.");
         }
     });
     //res.send("username set to NULL");
