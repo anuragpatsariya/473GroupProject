@@ -1,8 +1,15 @@
-angular.module("display", [])
-    .controller("displayController", function ($scope, $http) {
+angular.module("display", ['ngMap'])
+    .controller("displayController", function ($scope, $http, NgMap) {
         $scope.loggedin = false;
         $scope.loggedout = true;
         $scope.eventCards = [];
+        var vm = this;
+        $scope.dynMarkers = [];
+        $scope.points = [
+            { "name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index": 0 },
+            { "name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index": 1 },
+            { "name": "Sydney", "latitude": -33.869614, "longitude": 151.187451, "index": 2 }
+        ];
         $http({
             method: "POST",
             url: "/getEvents",
@@ -12,7 +19,7 @@ angular.module("display", [])
         }, function errorCallback(response) {
             console.log("Error.");
         });
-       // $('.modal-trigger').leanModal();
+        // $('.modal-trigger').leanModal();
 
 
         $scope.open_login = function () {
@@ -34,24 +41,27 @@ angular.module("display", [])
 
         }
 
+        $('ul.tabs').tabs();
+        $('ul.tabs').tabs('select_tab', 'show_card');
+        $('ul.tabs').tabs('select_tab', 'view_map');
 
 
-        $scope.deleteEvent = function(eventCard){
+        $scope.deleteEvent = function (eventCard) {
             console.log("Delete called.");
             console.log(eventCard);
             $http({
-                method:"POST",
-                url:"/deleteEvent",
-                data:eventCard
-            }).then(function successCallback(response){
+                method: "POST",
+                url: "/deleteEvent",
+                data: eventCard
+            }).then(function successCallback(response) {
                 //console.log(response);
                 //console.log($scope.eventCards.indexOf(eventCard));
                 console.log(response.data);
                 $scope.eventCards.splice($scope.eventCards.indexOf(eventCard), 1);
-                
-                
-                
-            },function errorCallback(response){
+
+
+
+            }, function errorCallback(response) {
                 console.log("Error");
             });
         };
@@ -79,6 +89,7 @@ angular.module("display", [])
                     if (response.data != "failure") {
                         $scope.loggedin = true;
                         $scope.loggedout = false;
+                        $('#signin').closeModal();
                         console.log("Welcome " + response.data);
                         $http({
                             method: "POST",
@@ -127,6 +138,8 @@ angular.module("display", [])
                 dataType: "application/json"
             }).then(function successCallback(response) {
                 console.log(response);
+                $scope.eventCards.push(response.data);
+                $('#createEvent').closeModal();
             }, function errorCallback(response) {
                 console.log("Error");
             });
@@ -151,10 +164,14 @@ angular.module("display", [])
                 dataType: "application/json"
             }).then(function successCallback(response) {
                 console.log(response.data);
+                $('#signup').closeModal();
             }, function errorCallback(response) {
                 console.log("Error");
             });
         };
+
+
+
 
         $scope.logout = function () {
             console.log("Logout called.");
@@ -178,5 +195,59 @@ angular.module("display", [])
                 console.log("Error");
             });
         };
+
+
+
+        $scope.pinClicked = function (events, marker) {
+
+
+            var pos = marker.$index;
+
+            var directionsDisplay = new google.maps.DirectionsRenderer();
+
+            var directionsService = new google.maps.DirectionsService();
+
+            directionsDisplay.setMap(null);
+
+            directionsDisplay.setMap($scope.map);
+
+            function calcRoute(pos) {
+
+
+                var start = $scope.points[0].latitude + "," + $scope.points[0].longitude;
+                var end = $scope.points[pos].latitude + "," + $scope.points[pos].longitude;
+
+
+                var request = {
+                    origin: start,
+                    destination: end,
+                    optimizeWaypoints: true,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+
+                directionsService.route(request, function (response, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        directionsDisplay.setDirections(response);
+                        console.log('enter!');
+
+                    }
+                });
+            }
+            calcRoute(pos)
+
+        }
+
+        NgMap.getMap().then(function (map) {
+
+
+
+
+
+
+
+        });
+
+
+
 
     });
