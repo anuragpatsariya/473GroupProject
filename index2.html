@@ -261,10 +261,17 @@
         </div>
 
         <div id="view_map">
-          <ng-map center="[-26.6875847,135.0857733]"  zoom="4">
-            <div ng-repeat="pos in points">
-              <marker position="{{pos.latitude}}, {{pos.longitude}}" on-click="pinClicked(this)"></marker>
+          <ng-map center="[33.878130, -117.886891]"  zoom="12">
+            <div ng-repeat="pos in eventCards">
+              <marker position="{{pos.locLat}}, {{pos.locLong}}" on-click="pinClicked(this)"/></marker>
+
+
             </div>
+            <shape ng-repeat="pos in eventCards"
+                   name="circle"
+                   radius="40"
+                   center="[{{fence.lat}}, {{fence.long}}]"
+            />
           </ng-map>
         </div>
       </div>
