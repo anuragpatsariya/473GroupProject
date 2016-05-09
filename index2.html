@@ -10,6 +10,12 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection" />
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection" />
+
+  <meta name="description" content="Simple Map">
+  <meta name="keywords" content="ng-map,AngularJS,center">
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+
 </head>
 
 <body ng-controller="displayController">
@@ -82,7 +88,7 @@
     <div align="center" class="modal-content">
       <h4>Create Event</h4>
       <h5>Enter the event details.</h5>
-     
+
 
       <div class="row">
         <div class="col s12">
@@ -90,61 +96,61 @@
             <div class="input-field col s12">
               <input type="number" id="eventCapacity" ng-model="eventDetails.eventCapacity" class="validate">
               <label for="eventCapacity" data-error="wrong" data-success="right">Event Capacity</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="date" id="eventDate" ng-model="eventDetails.eventDate" class="validate">
               <label for="eventDate" data-error="wrong" data-success="right">Event Date</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="text" id="eventDesc" ng-model="eventDetails.eventDesc" class="validate">
               <label for="eventDesc" data-error="wrong" data-success="right">Event Description</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="text" id="eventID" ng-model="eventDetails.eventID" class="validate">
               <label for="eventID" data-error="wrong" data-success="right">Event ID</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input  type="text" id="imageURL" ng-model="eventDetails.imageURL" class="validate">
               <label for="imageURL" data-error="wrong" data-success="right">Event Image URL</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="text" id="eventVerified" ng-model="eventDetails.eventVerified" class="validate">
               <label for="eventVerified" data-error="wrong" data-success="right">Is event verified</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="text" id="eventVisible" ng-model="eventDetails.eventVisible" class="validate">
               <label for="eventVisible" data-error="wrong" data-success="right">Is event visible</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
-              <input type="number" id="locLat" ng-model="eventDetails.locLat"" class="validate">
+              <input type="number" id="locLat" ng-model="eventDetails.locLat" class="validate">
               <label for="locLat" data-error="wrong" data-success="right">Event Location Latitute</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="number" id="LocLong" ng-model="eventDetails.locLong" class="validate">
               <label for="LocLong" data-error="wrong" data-success="right">Event Location Longitude</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="text" id="eventName" ng-model="eventDetails.eventName" class="validate">
               <label for="eventName" data-error="wrong" data-success="right">Event Name</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input  type="text" id="eventType" ng-model="eventDetails.eventType" class="validate">
               <label for="eventType" data-error="wrong" data-success="right">Event Type</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="number" id="visibility" ng-model="eventDetails.visibility" class="validate">
               <label for="visibility" data-error="wrong" data-success="right">Event Visibility in Miles</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="time" id="eventTime" ng-model="eventDetails.eventTime" class="validate">
               <label for="eventTime" data-error="wrong" data-success="right">Event Time</label>
-            </div>            
+            </div>
              <div class="input-field col s12">
               <input type="number" id="tenure" ng-model="eventDetails.tenure" class="validate">
               <label for="tenure" data-error="wrong" data-success="right">Event Visibility tenure in hours</label>
             </div>
-            
-            
+
+
           </div>
         </div>
       </div>
@@ -230,6 +236,14 @@
             </div>
           </div>
         </div>
+        <h1>Marker Cluster</h1>
+        <hr />
+        <ng-map center="[-26.6875847,135.0857733]" style="height: 480px;" zoom="4">
+          <div ng-repeat="pos in points">
+            <marker  position="{{pos.latitude}}, {{pos.longitude}}" on-click="pinClicked(this)">
+          </div>
+        </ng-map>
+
 
       </div>
 
@@ -261,7 +275,6 @@
         </div>
         <div class="footer-copyright ">
           <div class="container ">
-            © 2014 Copyright Text
             <a class="grey-text text-lighten-4 right " href="#! ">More Links</a>
           </div>
         </div>
@@ -276,7 +289,14 @@
       <script src="angular.min.js "></script>
       <script src="index.js "></script>
       <script src="actions.js "></script>
+      <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markers.js"></script>
+      <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/scripts/markerclusterer.js"></script>
+      <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/testapp/script-tags-for-development.js"></script>
+      <script src="https://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places"></script>
+      <script src="https://code.angularjs.org/1.3.15/angular.js"></script>
+      <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.js"></script>
 
+</div>
+    </div>
 </body>
-
 </html>

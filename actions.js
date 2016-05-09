@@ -1,8 +1,15 @@
-angular.module("display", [])
-    .controller("displayController", function ($scope, $http) {
+angular.module("display", ['ngMap'])
+    .controller("displayController", function ($scope, $http, NgMap) {
         $scope.loggedin = false;
         $scope.loggedout = true;
         $scope.eventCards = [];
+        var vm = this;
+        $scope.dynMarkers = [];
+        $scope.points = [
+            { "name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index" : 0 },
+            { "name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index" : 1 },
+            { "name": "Sydney", "latitude": -33.869614, "longitude": 151.187451, "index" : 2 }
+        ];
         $http({
             method: "POST",
             url: "/getEvents",
@@ -136,6 +143,9 @@ angular.module("display", [])
             });
         };
 
+
+
+
         $scope.logout = function () {
             console.log("Logout called.");
             $scope.user = {};
@@ -158,5 +168,59 @@ angular.module("display", [])
                 console.log("Error");
             });
         };
+
+
+
+        $scope.pinClicked = function(events, marker) {
+
+
+            var pos = marker.$index;
+
+            var directionsDisplay = new google.maps.DirectionsRenderer();
+
+            var directionsService = new google.maps.DirectionsService();
+
+            directionsDisplay.setMap(null);
+
+            directionsDisplay.setMap($scope.map);
+
+            function calcRoute(pos) {
+
+
+                var start = $scope.points[0].latitude + "," + $scope.points[0].longitude;
+                var end = $scope.points[pos].latitude + "," + $scope.points[pos].longitude;
+
+
+                var request = {
+                    origin: start,
+                    destination: end,
+                    optimizeWaypoints: true,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+
+                directionsService.route(request, function (response, status) {
+                    if (status == google.maps.DirectionsStatus.OK) {
+                        directionsDisplay.setDirections(response);
+                        console.log('enter!');
+
+                    }
+                });
+            }
+            calcRoute(pos)
+
+        }
+
+        NgMap.getMap().then(function(map) {
+
+
+
+
+
+
+
+        });
+
+
+
 
     });
