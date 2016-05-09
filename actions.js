@@ -218,8 +218,8 @@ angular.module("display", ['ngMap'])
 
                 google.maps.event.trigger($scope.map, 'resize');
                 $scope.map.setCenter(0);
-                var start = $ + "," + $scope.points[0].longitude;
-                var end = $scope.eventCards.locLat+ "," + $scope.eventCards[$scope.].locLong;
+                //var start = $ + "," + $scope.points[0].longitude;
+ //               var end = $scope.eventCards.locLat+ "," + $scope.eventCards[$scope.].locLong;
 
 
                 var request = {
