@@ -6,9 +6,9 @@ angular.module("display", ['ngMap'])
         var vm = this;
         $scope.dynMarkers = [];
         $scope.points = [
-            { "name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index" : 0 },
-            { "name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index" : 1 },
-            { "name": "Sydney", "latitude": -33.869614, "longitude": 151.187451, "index" : 2 }
+            { "name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index": 0 },
+            { "name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index": 1 },
+            { "name": "Sydney", "latitude": -33.869614, "longitude": 151.187451, "index": 2 }
         ];
         $http({
             method: "POST",
@@ -19,7 +19,7 @@ angular.module("display", ['ngMap'])
         }, function errorCallback(response) {
             console.log("Error.");
         });
-       // $('.modal-trigger').leanModal();
+        // $('.modal-trigger').leanModal();
 
 
         $scope.open_login = function () {
@@ -41,24 +41,27 @@ angular.module("display", ['ngMap'])
 
         }
 
+        $('ul.tabs').tabs();
+        $('ul.tabs').tabs('select_tab', 'show_card');
+        $('ul.tabs').tabs('select_tab', 'view_map');
 
 
-        $scope.deleteEvent = function(eventCard){
+        $scope.deleteEvent = function (eventCard) {
             console.log("Delete called.");
             console.log(eventCard);
             $http({
-                method:"POST",
-                url:"/deleteEvent",
-                data:eventCard
-            }).then(function successCallback(response){
+                method: "POST",
+                url: "/deleteEvent",
+                data: eventCard
+            }).then(function successCallback(response) {
                 //console.log(response);
                 //console.log($scope.eventCards.indexOf(eventCard));
                 console.log(response.data);
                 $scope.eventCards.splice($scope.eventCards.indexOf(eventCard), 1);
-                
-                
-                
-            },function errorCallback(response){
+
+
+
+            }, function errorCallback(response) {
                 console.log("Error");
             });
         };
@@ -191,7 +194,7 @@ angular.module("display", ['ngMap'])
 
 
 
-        $scope.pinClicked = function(events, marker) {
+        $scope.pinClicked = function (events, marker) {
 
 
             var pos = marker.$index;
@@ -230,7 +233,7 @@ angular.module("display", ['ngMap'])
 
         }
 
-        NgMap.getMap().then(function(map) {
+        NgMap.getMap().then(function (map) {
 
 
 
