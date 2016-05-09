@@ -90,6 +90,7 @@ angular.module("display", ['ngMap'])
                     if (response.data != "failure") {
                         $scope.loggedin = true;
                         $scope.loggedout = false;
+                        $('#signin').closeModal();
                         console.log("Welcome " + response.data);
                         $http({
                             method: "POST",
@@ -138,6 +139,8 @@ angular.module("display", ['ngMap'])
                 dataType: "application/json"
             }).then(function successCallback(response) {
                 console.log(response);
+                $scope.eventCards.push(response.data);
+                $('#createEvent').closeModal();
             }, function errorCallback(response) {
                 console.log("Error");
             });
@@ -162,6 +165,7 @@ angular.module("display", ['ngMap'])
                 dataType: "application/json"
             }).then(function successCallback(response) {
                 console.log(response.data);
+                $('#signup').closeModal();
             }, function errorCallback(response) {
                 console.log("Error");
             });
