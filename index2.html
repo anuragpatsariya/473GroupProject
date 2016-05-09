@@ -196,7 +196,7 @@
         <div class="col s12">
           <ul class="tabs">
             <li class="tab col s3"><a class="active" href="#show_card">Near by Events </a></li>
-            <li class="tab col s3"><a href="#view_map">Map View for Near By Events</a></li>
+            <li class="tab col s3" ng-click="resizeMap()"><a href="#view_map">Map View for Near By Events</a></li>
             <li class="tab col s3"><a href="">Remote Events</a></li>
             <li class="tab col s3"><a href="">Map View For Remote Events</a></li>
           </ul>
@@ -261,7 +261,7 @@
         </div>
 
         <div id="view_map">
-          <ng-map center="[-26.6875847,135.0857733]" style="height: 480px;" zoom="4">
+          <ng-map center="[-26.6875847,135.0857733]"  zoom="4">
             <div ng-repeat="pos in points">
               <marker position="{{pos.latitude}}, {{pos.longitude}}" on-click="pinClicked(this)"></marker>
             </div>

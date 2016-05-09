@@ -214,7 +214,7 @@ angular.module("display", ['ngMap'])
 
             window.setTimeout(function(){
 
-                google.maps.event.trigger(map, 'resize');
+                google.maps.event.trigger($scope.map, 'resize');
             },100);
 
             function calcRoute(pos) {
@@ -247,22 +247,19 @@ angular.module("display", ['ngMap'])
         NgMap.getMap().then(function (map) {
             window.setTimeout(function(){
 
-                google.maps.event.trigger(map, 'resize');
+                google.maps.event.trigger($scope.map, 'resize');
             },100);
 
         });
 
         $scope.resizeMap = function(){
           //  alert("refresh");
-            google.maps.event.trigger($scope.map, 'resize');
-
 
             window.setTimeout(function(){
 
-                google.maps.event.trigger(map, 'resize');
+                google.maps.event.trigger($scope.map, 'resize');
             },100);
           //  $scope.map.setCenter(0);
         }
-
-
+        
     });
