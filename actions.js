@@ -6,6 +6,7 @@ angular.module("display", ['ngMap'])
         var vm = this;
         $scope.render = true;
         $scope.dynMarkers = [];
+        $scope.loc;
         $scope.points = [
             {"name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index": 0},
             {"name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index": 1},
@@ -127,6 +128,7 @@ angular.module("display", ['ngMap'])
             visibility: "",
             eventTime: "",
             tenure: ""
+            
         };
         $scope.createEvent = function () {
             console.log($scope.eventDetails);
@@ -217,7 +219,7 @@ angular.module("display", ['ngMap'])
             function calcRoute(pos) {
 
                 google.maps.event.trigger($scope.map, 'resize');
-                $scope.map.setCenter(0);
+                //$scope.map.setCenter(0);
                 //var start = $ + "," + $scope.points[0].longitude;
  //               var end = $scope.eventCards.locLat+ "," + $scope.eventCards[$scope.].locLong;
 
@@ -245,7 +247,18 @@ angular.module("display", ['ngMap'])
         NgMap.getMap().then(function (map) {
 
 
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    $scope.$apply(function () {
+                        $scope.position = position;
 
+
+                        var myLatLng = new google.maps.LatLng($scope.position.coords.latitude, $scope.position.coords.longitude);
+                        $scope.map.setCenter(myLatLng);
+
+                    });
+                });
+            }
 
             window.setTimeout(function () {
 
@@ -256,13 +269,28 @@ angular.module("display", ['ngMap'])
 
         });
 
-        $scope.resizeMap = function () {
-            //  alert("refresh");
+        $scope.resizeMap = function ($scope) {
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(function (position) {
+                        $scope.$apply(function () {
+                            $scope.position = position;
+                            
+                            var myLatLng = new google.maps.LatLng($scope.position.coords.latitude, $scope.position.coords.longitude);
+                            $scope.map.setCenter(myLatLng);
+
+                        });
+                    });
+                }
 
             window.setTimeout(function () {
 
                 google.maps.event.trigger($scope.map, 'resize');
             }, 100);
 
+
         }
-    });
+
+
+
+            });

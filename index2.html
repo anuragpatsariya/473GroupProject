@@ -194,7 +194,7 @@
         <div class="col s12">
           <ul class="tabs">
             <li class="tab col s3"><a class="active" href="#show_card">Near by Events </a></li>
-            <li class="tab col s3" ng-click="resizeMap()"><a href="#view_map">Map View for Near By Events</a></li>
+            <li class="tab col s3" ng-click="resizeMap(this)"><a href="#view_map">Map View for Near By Events</a></li>
             <li class="tab col s3"><a href="">Remote Events</a></li>
             <li class="tab col s3"><a href="">Map View For Remote Events</a></li>
           </ul>
@@ -259,18 +259,15 @@
         </div>
 
         <div id="view_map">
-          <ng-map center="[33.878130, -117.886891]"  zoom="12">
+          <map zoom="10">
             <div ng-repeat="pos in eventCards">
               <marker position="{{pos.locLat}}, {{pos.locLong}}" on-click="pinClicked(this)"/></marker>
 
 
             </div>
-            <shape ng-repeat="pos in eventCards"
-                   name="circle"
-                   radius="40"
-                   center="[{{fence.lat}}, {{fence.long}}]"
-            />
-          </ng-map>
+
+          </map>
+
         </div>
       </div>
       <!--row div ends -->
@@ -332,6 +329,8 @@
   <script src="index.js"></script>
   <script src="actions.js"></script>
 
+
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 </body>
 
 </html>
