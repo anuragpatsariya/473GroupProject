@@ -2,14 +2,17 @@ angular.module("display", ['ngMap'])
     .controller("displayController", function ($scope, $http, NgMap) {
         $scope.loggedin = false;
         $scope.loggedout = true;
+        // $scope.display = false;
+        // $scope.show_tabs = true;
         $scope.eventCards = [];
+        $scope.MyeventCards = [];
         var vm = this;
         $scope.render = true;
         $scope.dynMarkers = [];
         $scope.points = [
-            {"name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index": 0},
-            {"name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index": 1},
-            {"name": "Sydney", "latitude": -33.869614, "longitude": 151.187451, "index": 2}
+            { "name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index": 0 },
+            { "name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index": 1 },
+            { "name": "Sydney", "latitude": -33.869614, "longitude": 151.187451, "index": 2 }
         ];
         $http({
             method: "POST",
@@ -27,10 +30,18 @@ angular.module("display", ['ngMap'])
             $('#signin').openModal();
 
         };
+
         $scope.create_Event = function () {
+            // $scope.display = true;
+            // $scope.show_tabs = false;
             $('#createEvent').openModal();
 
         };
+
+        // $scope.create_Event = function () {
+        //     $('#createEvent').openModal();
+
+        // };
         $scope.open_signup = function () {
             $('#signup').openModal();
 
@@ -59,6 +70,7 @@ angular.module("display", ['ngMap'])
                 //console.log($scope.eventCards.indexOf(eventCard));
                 console.log(response.data);
                 $scope.eventCards.splice($scope.eventCards.indexOf(eventCard), 1);
+                $scope.MyeventCards.splice($scope.MyeventCards.indexOf(eventCard), 1);
 
 
             }, function errorCallback(response) {
@@ -66,11 +78,33 @@ angular.module("display", ['ngMap'])
             });
         };
         //console.log($scope.eventCards);
+
+        $scope.joinEvent = function (eventCard) {
+            console.log("Join Event called.");
+            console.log(eventCard._id);
+            $http({
+                method: "POST",
+                url: "/joinEvent",
+                data: eventCard,
+                dataType: "application/json"
+            }).then(function successCallback(response) {
+                console.log(response);
+                console.log("You joined the event.");
+                //$('.modal_for_join').closeModal();
+                $("#" + eventCard._id).closeModal();
+
+            }, function errorCallback(response) {
+                console.log("Errror.");
+            }
+
+                )
+        };
+
         $scope.loginDetails = {
             username: "",
             pwd: ""
         }
-
+        console.log($scope.loginDetails);
         $scope.login = function () {
             console.log("Login Called.");
             console.log($scope.loginDetails);
@@ -94,10 +128,17 @@ angular.module("display", ['ngMap'])
                         $http({
                             method: "POST",
                             url: "/getEvents",
-                            data: {username: response.data}
+                            data: { username: response.data }
                         }).then(function successCallback(response) {
-                            console.log(response.data);
+                            console.log(response.data[0].addedBy);
                             $scope.eventCards = response.data;
+                            angular.forEach($scope.eventCards, function (item) {
+                                console.log(item);
+                                if (item.addedBy == $scope.loginDetails.username) {
+                                    console.log(item);
+                                    $scope.MyeventCards.push(item);
+                                }
+                            });
                         }, function errorCallback(response) {
                             console.log("error");
                         });
@@ -139,7 +180,10 @@ angular.module("display", ['ngMap'])
             }).then(function successCallback(response) {
                 console.log(response);
                 $scope.eventCards.push(response.data);
-                $('#createEvent').closeModal();
+                $scope.MyeventCards.push(response.data);
+                // $scope.show_tabs=true;
+              $('#createEvent').closeModal();
+            //   $scope.display=false;
             }, function errorCallback(response) {
                 console.log("Error");
             });
@@ -219,7 +263,7 @@ angular.module("display", ['ngMap'])
                 google.maps.event.trigger($scope.map, 'resize');
                 $scope.map.setCenter(0);
                 //var start = $ + "," + $scope.points[0].longitude;
- //               var end = $scope.eventCards.locLat+ "," + $scope.eventCards[$scope.].locLong;
+                //               var end = $scope.eventCards.locLat+ "," + $scope.eventCards[$scope.].locLong;
 
 
                 var request = {

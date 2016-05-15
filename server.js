@@ -1,6 +1,7 @@
 var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
+var objectId = require("mongodb").ObjectID;
 var mongoose = require("mongoose");
 var app = express();
 var MongoClient = mongodb.MongoClient;
@@ -16,28 +17,80 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + "/index2.html");
 });
 
-app.post("/deleteEvent", function(req, res){
-   console.log("Server deleteEvent called.");
-   console.log(req.body); 
-   var eventID = req.body.eventID;
-   console.log(eventID);
-   var collection;
-   MongoClient.connect("mongodb://localhost:27017/event_data", function(err,db){
-       if(err){
-           console.log("Unable to connect for delete."+err);
-       } else {
-           console.log("connected for delete.");
-           collection = db.collection("event_data");
-           collection.remove({"eventID":eventID}, function(error,record){
-            //    if(!error){
-            //        console.log(record);
-                    res.send(record);
-            //    }
-           });
-       }
-   });
+
+//Function to join an event.
+app.post("/joinEvent", function (req, res) {
+    var event = req.body;
+    console.log("You Joined: ", event);
+    var eventID = event._id;
+    var joinee = sess.user;
+    var eventName = event.eventName;
+    var joineeDoc = {};
+    joineeDoc.eventID = eventID;
+    joineeDoc.joinee = joinee;
+    joineeDoc.eventName = eventName;
+    console.log("Joinee Data: ", eventID, joinee);
+    var collection;
+    MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
+        if (err) {
+            console.log("Unable to connect", err);
+        } else {
+            console.log("Connected for update.");
+            collection = db.collection("event_data");
+            collection.findAndModify(
+                { "_id": new objectId(event._id) },
+                [],
+                { $inc: { noOfJoinees: 1 } },
+                { new: true },
+                function (err, record) {
+                    console.log(err, record);
+                    console.log("Record Updated.", record);
+                    //res.send(record);
+                }
+            );
+        }
+    });
+
+    MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
+        if (err) {
+            console.log("Unable to connect", err);
+        } else {
+            console.log("Connected to update Joinee.");
+            collection = db.collection("joinee_data");
+            collection.insert(joineeDoc, { w: 1 }, function (err, record) {
+                console.log(err, record);
+                console.log("Record Updated.", record);
+                res.send(record);
+            }
+            );
+        }
+    });
 });
 
+//Function to delete an event.
+app.post("/deleteEvent", function (req, res) {
+    console.log("Server deleteEvent called.");
+    console.log(req.body);
+    var eventID = req.body._id;
+    console.log(eventID);
+    var collection;
+    MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
+        if (err) {
+            console.log("Unable to connect for delete." + err);
+        } else {
+            console.log("connected for delete.");
+            collection = db.collection("event_data");
+            collection.remove({ "_id": new objectId(eventID)}, function (error, record) {
+                //    if(!error){
+                //        console.log(record);
+                res.send(record);
+                //    }
+            });
+        }
+    });
+});
+
+//Function to logout.
 app.post("/logout", function (req, res) {
     req.session.destroy(function (err) {
         if (err) {
@@ -51,6 +104,7 @@ app.post("/logout", function (req, res) {
 
 });
 
+//Function for login.
 app.post("/login", function (req, res) {
     sess = req.session;
     var username = req.body.username;
@@ -73,7 +127,7 @@ app.post("/login", function (req, res) {
                     if (result.length === 1) {
                         console.log("Login Successful.");
                         sess.user = result[0].username;
-                        console.log(sess.user,result[0].username);
+                        console.log(sess.user, result[0].username);
                         user = result[0].username;
                         console.log("Welcome " + user + "!!");
                         res.send(user);
@@ -89,52 +143,56 @@ app.post("/login", function (req, res) {
     });
 });
 
+//Function to get events.
 app.post("/getEvents", function (req, res) {
-    sess=req.session;
+    sess = req.session;
     console.log(req.body);
     console.log("Ready to serve Data.");
     console.log(sess);
     var collection;
-    if(sess.user){
+    if (sess.user) {
         var loggedinUSer = req.body.username;
         var collection;
         MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
-        if (err) {
-            console.log("Unable to get Events.");
-        } else {
-            console.log("Connected to get Events.");
-            collection = db.collection("event_data");
-            collection.find({"addedBy":loggedinUSer}).toArray(function (err, result) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    console.log("user data");
-                    //console.log(result);
-                    res.send(result);
-                }
-            });
-        }
-    });
-        
-    }else {
-    MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
-        if (err) {
-            console.log("Unable to get Events.");
-        } else {
-            console.log("Connected to get Events.");
-            collection = db.collection("event_data");
-            collection.find({}).toArray(function (err, result) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    console.log("all Data");
-                    res.send(result);
-                }
-            });
-        }
-    });}
+            if (err) {
+                console.log("Unable to get Events.");
+            } else {
+                console.log("Connected to get Events.");
+                collection = db.collection("event_data");
+                // collection.find({"addedBy":loggedinUSer}).toArray(function (err, result) {
+                collection.find({}).toArray(function (err, result) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        console.log("user data");
+                        //console.log(result);
+                        res.send(result);
+                    }
+                });
+            }
+        });
+
+    } else {
+        MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
+            if (err) {
+                console.log("Unable to get Events.");
+            } else {
+                console.log("Connected to get Events.");
+                collection = db.collection("event_data");
+                collection.find({}).toArray(function (err, result) {
+                    if (err) {
+                        res.send(err);
+                    } else {
+                        console.log("all Data");
+                        res.send(result);
+                    }
+                });
+            }
+        });
+    }
 });
 
+//Function to register a user.
 app.post("/registerUser", function (req, res) {
     var doc = req.body;
     console.log(doc);
@@ -154,11 +212,13 @@ app.post("/registerUser", function (req, res) {
     //res.send("Data Recieved");
 });
 
+//Function to create an event.
 app.post("/createEvent", function (req, res) {
     var doc = req.body;
     console.log(user);
     //console.log(sess.user);
     doc.addedBy = user;
+    doc.noOfJoinees = 0;
     console.log(doc);
     var collection;
     MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
@@ -175,6 +235,8 @@ app.post("/createEvent", function (req, res) {
     });
     //res.send("Data Recieved");
 });
+
+//Forever Alone but important code for server listening on port 5000.
 app.listen(5000, function () {
     console.log("Working on port 5000");
 });
