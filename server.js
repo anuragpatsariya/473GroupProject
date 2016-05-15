@@ -3,18 +3,46 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var objectId = require("mongodb").ObjectID;
 var mongoose = require("mongoose");
+var formidable = require("formidable");
 var app = express();
 var MongoClient = mongodb.MongoClient;
 var session = require("express-session");
 app.use(express.static("."));
 app.use(express.static(__dirname + '/js'));
 app.use(express.static(__dirname + '/images'));
+app.use(express.static(__dirname + '/lf-ng-md-file-input'));
 app.use(bodyParser.json());
 app.use(session({ secret: "sh", cookie: { maxAge: 5 * 60 * 1000 } }));
 var sess;
 var user;
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/index2.html");
+});
+
+
+app.post("/upload", function (req, res) {
+    var form = new formidable.IncomingForm();
+    form.uploadDir = __dirname + '/uploads';
+    //file upload path
+    form.parse(req, function (err, fields, files) {
+        //you can get fields here
+        console.log(fields);
+
+    });
+    form.on('fileBegin', function (name, file) {
+        file.path = form.uploadDir + "/" + file.name;
+        console.log("File: ", file);
+        data_file = file;
+        //modify file path
+    });
+    form.on('end', function () {
+        //res.sendStatus(200);
+        //conn.close();
+        console.log("File uploaded.");
+        res.send(data_file.name);
+        //when finish all process    
+    });
+    //res.send(data_file.name);
 });
 
 

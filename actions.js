@@ -1,7 +1,34 @@
-angular.module("display", ['ngMap'])
+angular.module("display", ['ngMap', 'ngMaterial', 'lfNgMdFileInput'])
     .controller("displayController", function ($scope, $http, NgMap) {
+        // setTimeout(function(){
+               $('.parallax').parallax();
+        // },500);
+      
         $scope.loggedin = false;
         $scope.loggedout = true;
+        //COde for image upload----------------------------------//
+        $scope.selectedFile = {};
+        $scope.$watch('files.length', function (newVal, oldVal) {
+
+            $scope.selectedFile = $scope.files;
+        });
+        // $scope.onFileSelect = function ($files) {
+        //     for (var i = 0; i < $files.length; i++) {
+        //         var file = $files[i];
+        //         $scope.upload = $upload.upload({
+        //             url: '/upload',
+        //             method: 'POST',
+        //             data: { myObj: $scope.myModelObj },
+        //             file: file,
+        //             fileFormDataName: myFile,
+        //         }).progress(function (evt) {
+        //             console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+        //         }).success(function (data, status, headers, config) {
+        //             //console.log(data);
+        //         });
+        //     }
+        // };
+        //-------------------------------------------------------///
         // $scope.display = false;
         // $scope.show_tabs = true;
         $scope.eventCards = [];
@@ -78,6 +105,31 @@ angular.module("display", ['ngMap'])
             });
         };
         //console.log($scope.eventCards);
+var uploaded_file;
+        $scope.uploadImage = function () {
+            console.log("Upload Image called.");
+            var formData = new FormData();
+            angular.forEach($scope.selectedFile, function (obj) {
+                //console.log(obj);
+                formData.append('files', obj.lfFile);
+            });
+            //console.log(formData);
+            $http({
+                method: "POST",
+                url: "/upload",
+                data: formData,
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': undefined }
+            }).then(function successCallback(response) {
+                //console.log(response.data);
+                uploaded_file = response.data;
+                console.log(uploaded_file);
+                $scope.imguploaded = true;
+                //$scope.dataBlock = response.data;
+            }, function errorCallback(response) {
+                console.log("Error.");
+            });
+        };
 
         $scope.joinEvent = function (eventCard) {
             console.log("Join Event called.");
@@ -171,6 +223,7 @@ angular.module("display", ['ngMap'])
         };
         $scope.createEvent = function () {
             console.log($scope.eventDetails);
+            $scope.eventDetails.imageURL=uploaded_file;
             $http({
 
                 method: "POST",
@@ -182,8 +235,8 @@ angular.module("display", ['ngMap'])
                 $scope.eventCards.push(response.data);
                 $scope.MyeventCards.push(response.data);
                 // $scope.show_tabs=true;
-              $('#createEvent').closeModal();
-            //   $scope.display=false;
+                $('#createEvent').closeModal();
+                //   $scope.display=false;
             }, function errorCallback(response) {
                 console.log("Error");
             });
@@ -240,73 +293,92 @@ angular.module("display", ['ngMap'])
 
 
         $scope.pinClicked = function (events, marker) {
-
-
             var pos = marker.$eventID;
-
             var directionsDisplay = new google.maps.DirectionsRenderer();
-
             var directionsService = new google.maps.DirectionsService();
-
             directionsDisplay.setMap(null);
-
             directionsDisplay.setMap($scope.map);
-
             alert(pos);
             window.setTimeout(function () {
-
                 google.maps.event.trigger($scope.map, 'resize');
             }, 100);
-
             function calcRoute(pos) {
-
                 google.maps.event.trigger($scope.map, 'resize');
-                $scope.map.setCenter(0);
+                //$scope.map.setCenter(0);
                 //var start = $ + "," + $scope.points[0].longitude;
                 //               var end = $scope.eventCards.locLat+ "," + $scope.eventCards[$scope.].locLong;
-
-
                 var request = {
                     origin: start,
                     destination: end,
                     optimizeWaypoints: true,
                     travelMode: google.maps.TravelMode.DRIVING
                 };
-
                 directionsService.route(request, function (response, status) {
                     if (status == google.maps.DirectionsStatus.OK) {
                         directionsDisplay.setDirections(response);
                         console.log('enter!');
-
                     }
                 });
             }
-
             calcRoute(pos)
-
         }
+
 
         NgMap.getMap().then(function (map) {
-
-
-
-
-            window.setTimeout(function () {
-
-                google.maps.event.trigger($scope.map, 'resize');
-
-            }, 100);
-
-
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    $scope.$timeout(function () {
+                        $scope.position = position;
+                        var myLatLng = new google.maps.LatLng($scope.position.coords.latitude, $scope.position.coords.longitude);
+                        $scope.map.setCenter(myLatLng);
+                    });
+                });
+            }
         });
 
-        $scope.resizeMap = function () {
-            //  alert("refresh");
+        // NgMap.getMap().then(function (map) {
+        //     if (navigator.geolocation) {
+        //         navigator.geolocation.getCurrentPosition(function (position) {
+        //             $scope.$apply(function () {
+        //                 $scope.position = position;
+        //                 var myLatLng = new google.maps.LatLng($scope.position.coords.latitude, $scope.position.coords.longitude);
+        //                 $scope.map.setCenter(myLatLng);
+        //             });
+        //         });
+        //     }
+        //     window.setTimeout(function () {
+        //         google.maps.event.trigger($scope.map, 'resize');
+        //     }, 100);
+        // });
 
+        // NgMap.getMap().then(function (map) {
+        //     window.setTimeout(function () {
+        //         google.maps.event.trigger($scope.map, 'resize');
+        //     }, 100);
+        // });
+
+        $scope.resizeMap = function ($scope) {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    $scope.$apply(function () {
+                        $scope.position = position;
+                        var myLatLng = new google.maps.LatLng($scope.position.coords.latitude, $scope.position.coords.longitude);
+                        $scope.map.setCenter(myLatLng);
+                    });
+                });
+            }
             window.setTimeout(function () {
-
                 google.maps.event.trigger($scope.map, 'resize');
             }, 100);
-
         }
+
+        // $scope.resizeMap = function () {
+        //     //  alert("refresh");
+
+        //     window.setTimeout(function () {
+
+        //         google.maps.event.trigger($scope.map, 'resize');
+        //     }, 100);
+
+        // }
     });
