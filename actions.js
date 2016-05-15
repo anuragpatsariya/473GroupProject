@@ -288,9 +288,5 @@ angular.module("display", ['ngMap'])
                 google.maps.event.trigger($scope.map, 'resize');
             }, 100);
 
-
         }
-
-
-
             });
