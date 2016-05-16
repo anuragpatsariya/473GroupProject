@@ -131,18 +131,48 @@ angular.module("display", ['ngMap'])
         $scope.createEvent = function () {
             console.log($scope.eventDetails);
 
-            $http({
-                method: "POST",
-                data: $scope.eventDetails,
-                url: "/createEvent",
-                dataType: "application/json"
-            }).then(function successCallback(response) {
-                console.log(response);
-                $scope.eventCards.push(response.data);
-                $('#createEvent').closeModal();
-            }, function errorCallback(response) {
-                console.log("Error");
-            });
+            for (detail in $scope.eventDetails){
+                if($scope.eventDetails[detail] === ''){
+                    console.log(detail);
+                    break;
+                }
+            }
+            if($scope.eventDetails.eventCapacity === ''){
+                window.alert('Event Capacity can\'t be empty');
+            } else if($scope.eventDetails.eventDate === ''){
+                window.alert('Event Date can\'t be empty');
+            } else if($scope.eventDetails.eventDesc === ''){
+                window.alert('Event Description can\'t be empty');
+            } else if($scope.eventDetails.imageURL === ''){
+                window.alert('Event Image URL can\'t be empty');
+            } else if($scope.eventDetails.locLat === ''){
+                window.alert('Event Location Latitude can\'t be empty');
+            } else if($scope.eventDetails.locLong === ''){
+                window.alert('Event Location Longitude can\'t be empty');
+            } else if($scope.eventDetails.eventName === ''){
+                window.alert('Event Name can\'t be empty');
+            } else if($scope.eventDetails.eventType === ''){
+                window.alert('Event Type can\'t be empty');
+            } else if($scope.eventDetails.visibility === ''){
+                window.alert('Event Visibility in Miles can\'t be empty');
+            } else if($scope.eventDetails.eventTime === ''){
+                window.alert('Event Time can\'t be empty');
+            } else if($scope.eventDetails.tenure === ''){
+                window.alert('Event Visibility tenure in hours can\'t be empty');
+            } else {
+                $http({
+                    method: "POST",
+                    data: $scope.eventDetails,
+                    url: "/createEvent",
+                    dataType: "application/json"
+                }).then(function successCallback(response) {
+                    console.log(response);
+                    $scope.eventCards.push(response.data);
+                    $('#createEvent').closeModal();
+                }, function errorCallback(response) {
+                    console.log("Error");
+                });
+            }
         };
 
         $scope.user = {

@@ -183,7 +183,40 @@ app.post("/createEvent", function (req, res) {
     var doc = req.body;
     doc._id = req.body.eventName + req.body.eventDate + req.body.eventTime;
     doc.addedBy = user;
-    console.log(doc);
+    if(req.body.eventCapacity === undefined){
+        res.send(500,'Event Capacity can\'t be empty');
+        return;
+    } else if(req.body.eventDate === ''){
+        res.send(500,'Event Date can\'t be empty');
+        return;
+    } else if(req.body.eventDesc === ''){
+        res.send(500,'Event Description can\'t be empty');
+        return;
+    } else if(req.body.imageURL === ''){
+        res.send(500,'Event Image URL can\'t be empty');
+        return;
+    } else if(req.body.locLat === ''){
+        res.send(500,'Event Location Latitude can\'t be empty');
+        return;
+    } else if(req.body.locLong === ''){
+        res.send(500,'Event Location Longitude can\'t be empty');
+        return;
+    } else if(req.body.eventName === ''){
+        res.send(500,'Event Name can\'t be empty');
+        return;
+    } else if(req.body.eventType === ''){
+        res.send(500,'Event Type can\'t be empty');
+        return;
+    } else if(req.body.visibility === ''){
+        res.send(500,'Event Visibility in Miles can\'t be empty');
+        return;
+    } else if(req.body.eventTime === ''){
+        res.send(500,'Event Time can\'t be empty');
+        return;
+    } else if(req.body.tenure === ''){
+        res.send(500,'Event Visibility tenure in hours can\'t be empty');
+        return;
+    }
     var collection;
     MongoClient.connect("mongodb://localhost:27017/event_data", function (err, db) {
         if (err) {
