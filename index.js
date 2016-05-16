@@ -1,6 +1,6 @@
-var app = angular.module('eventapp', [])
+var app = angular.module('eventapp', []);
 
-app.controller('EventController', function ($scope, $http) {
+app.controller('EventController', function ($scope) {
     $('.modal-trigger').leanModal();
    
 
@@ -13,6 +13,7 @@ app.controller('EventController', function ($scope, $http) {
 
     };
 
+    //noinspection JSAnnotator
     $scope.join_now() = function () {
         $('#join_now').openModal();
 

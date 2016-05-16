@@ -109,7 +109,7 @@ app.post("/getEvents", function (req, res) {
                     res.send(err);
                 } else {
                     console.log("user data");
-                    //console.log(result);
+                    console.log(result+"   check**");
                     res.send(result);
                 }
             });
@@ -128,6 +128,7 @@ app.post("/getEvents", function (req, res) {
                     res.send(err);
                 } else {
                     console.log("all Data");
+                    console.log(result);
                     res.send(result);
                 }
             });
@@ -137,6 +138,27 @@ app.post("/getEvents", function (req, res) {
 
 app.post("/registerUser", function (req, res) {
     var doc = req.body;
+    doc._id = doc.username;
+    if(req.body.firstName === undefined){
+        res.status(500).send('Firstname can\'t be empty');
+        return;
+    }
+    if(req.body.lastName === undefined){
+        res.status(500).send('Lastname can\'t be empty');
+        return;
+    }
+    if(req.body.username === undefined){
+        res.status(500).send('Username can\'t be empty');
+        return;
+    }
+    if(req.body.password === undefined){
+        res.status(500).send('Password can\'t be empty');
+        return;
+    }
+    if(req.body.dob === undefined){
+        res.status(500).send('Birth date can\'t be empty');
+        return;
+    }
     console.log(doc);
     var collection;
     MongoClient.connect("mongodb://localhost:27017/user_data", function (err, db) {
@@ -146,8 +168,11 @@ app.post("/registerUser", function (req, res) {
             console.log("Connected to insert.");
             collection = db.collection("user_data");
             collection.insert(doc, { w: 1 }, function (err, record) {
-                console.log(record);
-                res.send(record.ops[0]);
+                if (err){
+                    res.send(500,'Username already exists!!');
+                }else{
+                    res.send(record.ops[0]);
+                }
             });
         }
     });
@@ -156,8 +181,7 @@ app.post("/registerUser", function (req, res) {
 
 app.post("/createEvent", function (req, res) {
     var doc = req.body;
-    console.log(user);
-    //console.log(sess.user);
+    doc._id = req.body.eventName + req.body.eventDate + req.body.eventTime;
     doc.addedBy = user;
     console.log(doc);
     var collection;
@@ -168,8 +192,12 @@ app.post("/createEvent", function (req, res) {
             console.log("Connected to insert.");
             collection = db.collection("event_data");
             collection.insert(doc, { w: 1 }, function (err, record) {
-                console.log(record);
-                res.send(record.ops[0]);
+                if(err){
+                    res.send(500,'Event already created!!');
+                }else{
+                    res.send(record.ops[0]);
+                }
+
             });
         }
     });

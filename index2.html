@@ -96,17 +96,17 @@
               <label for="eventCapacity" data-error="wrong" data-success="right">Event Capacity</label>
             </div>
             <div class="input-field col s12">
-              <input type="date" id="eventDate" ng-model="eventDetails.eventDate" class="validate">
+              <input type="date" id="eventDate" ng-model="eventDetails.eventDate" class="validate" min="minDate" max="maxDate">
               <label for="eventDate" data-error="wrong" data-success="right">Event Date</label>
             </div>
             <div class="input-field col s12">
               <input type="text" id="eventDesc" ng-model="eventDetails.eventDesc" class="validate">
               <label for="eventDesc" data-error="wrong" data-success="right">Event Description</label>
             </div>
-            <div class="input-field col s12">
+            <!--div class="input-field col s12">
               <input type="text" id="eventID" ng-model="eventDetails.eventID" class="validate">
               <label for="eventID" data-error="wrong" data-success="right">Event ID</label>
-            </div>
+            </div-->
             <div class="input-field col s12">
               <input type="text" id="imageURL" ng-model="eventDetails.imageURL" class="validate">
               <label for="imageURL" data-error="wrong" data-success="right">Event Image URL</label>
@@ -136,7 +136,7 @@
               <label for="eventType" data-error="wrong" data-success="right">Event Type</label>
             </div>
             <div class="input-field col s12">
-              <input type="number" id="visibility" ng-model="eventDetails.visibility" class="validate">
+              <input type="number" id="visibility" ng-model="eventDetails.visibility" class="validate"  min=0 max=20>
               <label for="visibility" data-error="wrong" data-success="right">Event Visibility in Miles</label>
             </div>
             <div class="input-field col s12">
@@ -144,7 +144,7 @@
               <label for="eventTime" data-error="wrong" data-success="right">Event Time</label>
             </div>
             <div class="input-field col s12">
-              <input type="number" id="tenure" ng-model="eventDetails.tenure" class="validate">
+              <input type="number" id="tenure" ng-model="eventDetails.tenure" class="validate" min=0 max=72>
               <label for="tenure" data-error="wrong" data-success="right">Event Visibility tenure in hours</label>
             </div>
 
@@ -175,10 +175,9 @@
       <input placeholder="Last Name" required type="text" ng-model="user.lastName" />
       <input placeholder="Username" required type="text" ng-model="user.username">
       <input placeholder="Password" required type="password" ng-model="user.password" name="password" />
-      <input placeholder="Date of Birth" required type="date" ng-model="user.dob" />
+      <input placeholder="Date of Birth" required type="date" min=1900-01-01 max=2014-05-15 ng-model="user.dob" />
       <input placeholder="E-mail ID e.g example@abc.com" required type="email" ng-model="user.email" />
       <button type="button" class="waves-effect waves-red btn" ng-click="register()">Register</button>
-
 
     </div>
   </div>
@@ -213,7 +212,7 @@
             <div class="col s3" ng-repeat="eventCard in eventCards">
               <div class="card">
                 <div class="card-image waves-effect waves-block waves-light">
-                  <img class="activator" ng-src="images/{{eventCard.imageURL}}">
+                  <!--img class="activator" ng-src="images/{{eventCard.imageURL}}"-->
                 </div>
                 <div class="card-content">
                   <span class="card-title activator grey-text text-darken-4">{{eventCard.eventName}}<i class="material-icons

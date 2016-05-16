@@ -3,10 +3,8 @@ angular.module("display", ['ngMap'])
         $scope.loggedin = false;
         $scope.loggedout = true;
         $scope.eventCards = [];
-        var vm = this;
         $scope.render = true;
         $scope.dynMarkers = [];
-        $scope.loc;
         $scope.points = [
             {"name": "Canberra", "latitude": -35.282614, "longitude": 149.127775, "index": 0},
             {"name": "Melbourne", "latitude": -37.815482, "longitude": 144.983460, "index": 1},
@@ -14,11 +12,11 @@ angular.module("display", ['ngMap'])
         ];
         $http({
             method: "POST",
-            url: "/getEvents",
+            url: "/getEvents"
         }).then(function successCallback(response) {
             console.log(response.data);
             $scope.eventCards = response.data;
-        }, function errorCallback(response) {
+        }, function errorCallback() {
             console.log("Error.");
         });
         // $('.modal-trigger').leanModal();
@@ -41,7 +39,7 @@ angular.module("display", ['ngMap'])
             //$('#join_now').openModal();
             $("#" + eventCard._id).openModal();
 
-        }
+        };
 
         $('ul.tabs').tabs();
         $('ul.tabs').tabs('select_tab', 'show_card');
@@ -128,12 +126,12 @@ angular.module("display", ['ngMap'])
             visibility: "",
             eventTime: "",
             tenure: ""
-            
+
         };
         $scope.createEvent = function () {
             console.log($scope.eventDetails);
-            $http({
 
+            $http({
                 method: "POST",
                 data: $scope.eventDetails,
                 url: "/createEvent",
@@ -158,19 +156,33 @@ angular.module("display", ['ngMap'])
         $scope.register = function () {
             console.log("User register called.");
             console.log($scope.user);
-            $http({
+            if ($scope.user.firstName === '') {
+                window.alert('First Name can\'t be empty');
+            } else if ($scope.user.lastName == "") {
+                window.alert('Last Name can\'t be empty');
+            } else if ($scope.user.username == "") {
+                window.alert('Username can\'t be empty');
+            } else if ($scope.user.pwd == "") {
+                window.alert('Password can\'t be empty');
+            } else if ($scope.user.dob == "") {
+                window.alert('Birth Date can\'t be empty');
+            } else if ($scope.user.email == "") {
+                window.alert('Email ID can\'t be empty');
+            } else {
+                $http({
 
-                method: "POST",
-                data: $scope.user,
-                url: "/registerUser",
-                dataType: "application/json"
-            }).then(function successCallback(response) {
-                console.log(response.data);
-                $('#signup').closeModal();
-            }, function errorCallback(response) {
-                console.log("Error");
-            });
-        };
+                    method: "POST",
+                    data: $scope.user,
+                    url: "/registerUser",
+                    dataType: "application/json"
+                }).then(function successCallback(response) {
+                    console.log(response.data);
+                    $('#signup').closeModal();
+                }, function errorCallback(response) {
+                    window.alert(response.data);
+                });
+            }
+            };
 
 
         $scope.logout = function () {
@@ -275,7 +287,7 @@ angular.module("display", ['ngMap'])
                     navigator.geolocation.getCurrentPosition(function (position) {
                         $scope.$apply(function () {
                             $scope.position = position;
-                            
+
                             var myLatLng = new google.maps.LatLng($scope.position.coords.latitude, $scope.position.coords.longitude);
                             $scope.map.setCenter(myLatLng);
 
